@@ -9,7 +9,8 @@ class Users extends React.Component {
 
     this.state = {
       users: [],
-      redirect: false
+      redirect: false,
+      isLoading: false
     };
     //do binding in constructor
     //this.deleteUser = this.deleteUser.bind(this);
@@ -18,7 +19,10 @@ class Users extends React.Component {
   //lifecycle method thats called fater component is mounted on page
   //only valid for class components, Function components use hooks
   componentDidMount() {
-    userApi.getUsers().then(users => this.setState({ users: users }));
+    this.setState({ isLoading: true });
+    userApi
+      .getUsers()
+      .then(users => this.setState({ users: users, isLoading: false }));
   }
 
   deleteUser = id => {
@@ -46,6 +50,7 @@ class Users extends React.Component {
     return (
       <>
         <h1>Users</h1>
+        {this.state.isLoading && <p>Loading...</p>}
         {this.state.redirect && <Redirect to="/manage-user" />}
         <Button
           onClick={() =>

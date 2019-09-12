@@ -13,13 +13,25 @@ function ManageUser(props) {
   const userState = useState(newUser);
   const [user, setUser] = userState;
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     if (props.match.params.userId) {
       userApi.getUserById(props.match.params.userId).then(user => {
-        setUser(user);
+        if (mounted) {
+          setUser(user);
+          setIsLoading(false);
+        }
       });
+    } else {
+      setIsLoading(false);
     }
+
+    //called when component is unmounting
+    return () => (mounted = false);
+
     // eslint-disable-next-line no-use-before-define
   }, [props.match.params.userId]);
   //const user = userState[0]; //which holds the state
@@ -43,6 +55,7 @@ function ManageUser(props) {
   function saveUser(event) {
     event.preventDefault();
     if (!isValid()) return;
+    setIsFormSubmitted(true);
     user.id
       ? userApi.editUser(user).then(handleSave) //similar as  userApi.editUser(user).then(savedUser => handleSave(savedUser));
       : userApi.editUser(user).then(handleSave);
@@ -54,7 +67,8 @@ function ManageUser(props) {
     userCopy[event.target.name] = event.target.value;
     setUser(userCopy);
   }
-
+  if (isLoading === null) return null; //one way of solving flicker problem on add user, we can also use state
+  if (isLoading) return "Loading...";
   return (
     <>
       <h1>Manage User</h1>
@@ -79,7 +93,11 @@ function ManageUser(props) {
           onChange={handleChange}
         />
 
-        <input type="submit" value="Save User" />
+        <input
+          type="submit"
+          value={isFormSubmitted ? "saving..." : "Save User"}
+          disabled={isFormSubmitted}
+        />
       </form>
     </>
   );
