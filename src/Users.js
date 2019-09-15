@@ -2,6 +2,7 @@ import React from "react";
 import * as userApi from "./api/userApi";
 import { Link, Redirect } from "react-router-dom";
 import Button from "@paycor/button";
+import { Delete } from "@paycor/icon";
 
 class Users extends React.Component {
   constructor(props) {
@@ -39,8 +40,18 @@ class Users extends React.Component {
     return (
       //<li>{`username ${user.name}`}</li>
       <li key={user.id}>
-        <Button onClick={() => this.deleteUser(user.id)}>Delete</Button> ----
-        <Link to={`/manage-user/${user.id}`}>{user.name}</Link> ----
+        <Button
+          type={Button.Types.DELETE}
+          icon={Delete}
+          onClick={() => this.deleteUser(user.id)}
+        >
+          Delete
+        </Button>{" "}
+        ----
+        <Link id={"user-" + user.id} to={`/manage-user/${user.id}`}>
+          {user.name}
+        </Link>{" "}
+        ----
         {user.hairColor}
       </li>
     );

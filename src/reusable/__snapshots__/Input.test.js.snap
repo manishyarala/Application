@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should not render the example <p> when no error 1`] = `
+<div>
+  <label
+    htmlFor="test"
+  >
+    test
+  </label>
+  <br />
+  <input
+    id="test"
+    name="test"
+    onChange={[Function]}
+    style={
+      Object {
+        "border": "solid 1px red",
+      }
+    }
+    value="test"
+  />
+  <br />
+  <p
+    role="alert"
+    style={
+      Object {
+        "color": "red",
+        "fontWeight": "bold",
+      }
+    }
+  >
+    example error
+  </p>
+</div>
+`;

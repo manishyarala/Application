@@ -25,7 +25,11 @@ function Input(props) {
         value={props.value}
       ></input>
       <br />
-      {props.error && <p style={errorStyle}>{props.error}</p>}
+      {props.error && (
+        <p role="alert" style={errorStyle}>
+          {props.error}
+        </p>
+      )}
     </div>
   );
 }

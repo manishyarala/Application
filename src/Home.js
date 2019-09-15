@@ -5,3 +5,5 @@ const Home = () => {
 };
 
 export default Home;
+
+//pure function only relies on ours and it doesnt mutate
