@@ -36,12 +36,21 @@ function Input(props) {
 
 //prop types run on browser
 Input.propTypes = {
+  /** HTML ID assigned to the input */
   id: PropTypes.string.isRequired,
+
+  /** Label Value */
   label: PropTypes.string.isRequired,
+
+  /** Input Type */
   type: PropTypes.oneOf(["text", "email", "phone", "number"]),
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+
+  /** Value assigned to the input */
   value: PropTypes.string.isRequired,
+
+  /**Error to display below the component */
   error: PropTypes.string
 };
 

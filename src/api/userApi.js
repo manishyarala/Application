@@ -17,6 +17,7 @@ export function deleteUser(userId) {
 }
 
 export function addUser(user) {
+  debugger;
   return fetch("http://localhost:3001/users", {
     method: "POST",
     body: JSON.stringify(user),

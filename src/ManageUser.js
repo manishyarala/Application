@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import Input from "./reusable/Input";
 import * as userApi from "./api/userApi";
 import { toast } from "react-toastify";
+import { inputError, error } from "../src/styles";
+//import { Select } from "@paycor/Select";
 
 const newUser = {
   id: null,
   name: "",
-  hairColor: ""
+  role: ""
 };
+
 function ManageUser(props) {
   //handle state via the useState hook
   const userState = useState(newUser);
@@ -16,6 +19,7 @@ function ManageUser(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
+  const options = ["User", "Admin"];
   useEffect(() => {
     let mounted = true;
     if (props.match.params.userId) {
@@ -46,19 +50,20 @@ function ManageUser(props) {
     //using underscore prefix to delcare its a private variable
     const _errors = {};
     if (!user.name) _errors.name = "Name is required.";
-    if (!user.hairColor) _errors.hairColor = "Hair Color is required.";
+    if (!user.role) _errors.role = "Role is required.";
     setErrors(_errors);
     //if errorrs object still has no properties, then there are no erros
     return Object.keys(_errors).length === 0;
   }
 
   function saveUser(event) {
+    debugger;
     event.preventDefault();
     if (!isValid()) return;
     setIsFormSubmitted(true);
     user.id
       ? userApi.editUser(user).then(handleSave) //similar as  userApi.editUser(user).then(savedUser => handleSave(savedUser));
-      : userApi.editUser(user).then(handleSave);
+      : userApi.addUser(user).then(handleSave);
   }
 
   function handleChange(event) {
@@ -83,15 +88,36 @@ function ManageUser(props) {
           value={user.name}
         />
 
-        <Input
-          id="user-hairColor"
-          name="hairColor" //this is the property we wanna set onChange
-          label="Hair Color"
+        {/* <Select options={options} label="Role" handleChange={handleChange} /> */}
+        <div>
+          <label htmlFor="role">Role</label>
+          <select
+            id="role"
+            value={user.role}
+            name="role"
+            onChange={handleChange}
+            style={errors.role ? inputError : null}
+          >
+            <option value=""></option>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+          {errors.role && (
+            <p role="alert" style={error}>
+              {errors.role}
+            </p>
+          )}
+        </div>
+
+        {/* <Input
+          id="user-role"
+          name="role" //this is the property we wanna set onChange
+          label="Role"
           type="text"
-          error={errors.hairColor}
-          value={user.hairColor}
+          error={errors.role}
+          value={user.role}
           onChange={handleChange}
-        />
+        /> */}
 
         <input
           type="submit"
