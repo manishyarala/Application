@@ -16,6 +16,7 @@ function ExampleInput(props) {
       name="firstName"
       onChange={event => setValue(event.target.value)}
       value={value}
+      error={text("error", value)}
       //assign any props passed in to this Input
       {...props}
     />

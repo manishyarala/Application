@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Input from "./reusable/Input";
 import * as userApi from "./api/userApi";
+import PropTypes from "prop-types";
 import { toast } from "react-toastify";
-import { inputError, error } from "../src/styles";
+import { inputError, errorMessage } from "../src/styles";
+import Select from "./reusable/Select";
 //import { Select } from "@paycor/Select";
 
 const newUser = {
@@ -12,6 +14,7 @@ const newUser = {
 };
 
 function ManageUser(props) {
+  const nameInputRef = useRef();
   //handle state via the useState hook
   const userState = useState(newUser);
   const [user, setUser] = userState;
@@ -19,16 +22,30 @@ function ManageUser(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
-  const options = ["User", "Admin"];
+  const options = [
+    { label: "", value: "" },
+    { label: "User", value: "user" },
+    { label: "Admin", value: "admin" }
+  ];
+
   useEffect(() => {
+    if (!isLoading) {
+      nameInputRef.current.focus();
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    //focus the name input on load after loading completes
     let mounted = true;
     if (props.match.params.userId) {
-      userApi.getUserById(props.match.params.userId).then(user => {
-        if (mounted) {
-          setUser(user);
-          setIsLoading(false);
-        }
-      });
+      const _user = props.users.find(
+        u => u.id === parseInt(props.match.params.userId, 10)
+      );
+
+      if (mounted) {
+        setUser(_user);
+        setIsLoading(false);
+      }
     } else {
       setIsLoading(false);
     }
@@ -37,7 +54,7 @@ function ManageUser(props) {
     return () => (mounted = false);
 
     // eslint-disable-next-line no-use-before-define
-  }, [props.match.params.userId]);
+  }, [isLoading, props.match.params.userId, props.users]);
   //const user = userState[0]; //which holds the state
   //const setUser = userState[1]; //which sets the state
 
@@ -61,9 +78,21 @@ function ManageUser(props) {
     event.preventDefault();
     if (!isValid()) return;
     setIsFormSubmitted(true);
-    user.id
-      ? userApi.editUser(user).then(handleSave) //similar as  userApi.editUser(user).then(savedUser => handleSave(savedUser));
-      : userApi.addUser(user).then(handleSave);
+    if (user.id) {
+      userApi.editUser(user).then(savedUser => {
+        const newUsers = props.users.map(u =>
+          u.id === savedUser.id ? savedUser : u
+        );
+        props.setUsers(newUsers);
+        handleSave(savedUser);
+      }); //similar as  userApi.editUser(user).then(savedUser => handleSave(savedUser));
+    } else {
+      userApi.addUser(user).then(savedUser => {
+        const newUsers = [...props.users, savedUser];
+        props.setUsers(newUsers);
+        handleSave(savedUser);
+      });
+    }
   }
 
   function handleChange(event) {
@@ -79,6 +108,7 @@ function ManageUser(props) {
       <h1>Manage User</h1>
       <form onSubmit={saveUser}>
         <Input
+          ref={nameInputRef}
           id="user-name"
           name="name"
           label="Name"
@@ -88,36 +118,15 @@ function ManageUser(props) {
           value={user.name}
         />
 
-        {/* <Select options={options} label="Role" handleChange={handleChange} /> */}
-        <div>
-          <label htmlFor="role">Role</label>
-          <select
-            id="role"
-            value={user.role}
-            name="role"
-            onChange={handleChange}
-            style={errors.role ? inputError : null}
-          >
-            <option value=""></option>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-          {errors.role && (
-            <p role="alert" style={error}>
-              {errors.role}
-            </p>
-          )}
-        </div>
-
-        {/* <Input
-          id="user-role"
-          name="role" //this is the property we wanna set onChange
+        <Select
           label="Role"
-          type="text"
-          error={errors.role}
+          id="role"
           value={user.role}
+          name="role"
           onChange={handleChange}
-        /> */}
+          options={options}
+          error={errors.role}
+        />
 
         <input
           type="submit"
@@ -128,5 +137,10 @@ function ManageUser(props) {
     </>
   );
 }
+
+ManageUser.propTypes = {
+  setUsers: PropTypes.func.isRequired,
+  users: PropTypes.array.isRequired
+};
 
 export default ManageUser;

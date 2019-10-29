@@ -1,38 +1,30 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { errorColor } from "../styles";
+import { errorMessage, inputError } from "../styles";
 
-const errorStyle = {
-  color: errorColor,
-  fontWeight: "bold"
-};
-
-const inputErrorStyle = {
-  border: "solid 1px " + errorColor
-};
-
-function Input(props) {
+const Input = React.forwardRef((props, ref) => {
   return (
     <div>
       <label htmlFor={props.id}>{props.label}</label>
       <br />
       <input
-        style={props.error ? inputErrorStyle : null}
+        style={props.error ? inputError : null}
         id={props.id}
         name={props.name}
         type={props.type}
+        ref={ref}
         onChange={props.onChange}
         value={props.value}
       ></input>
       <br />
       {props.error && (
-        <p role="alert" style={errorStyle}>
+        <p role="alert" style={errorMessage}>
           {props.error}
         </p>
       )}
     </div>
   );
-}
+});
 
 //prop types run on browser
 Input.propTypes = {

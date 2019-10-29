@@ -1,6 +1,6 @@
 export const errorColor = "red";
 
-export const error = {
+export const errorMessage = {
   color: errorColor,
   fontWeight: "bold"
 };

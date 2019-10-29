@@ -1,29 +1,20 @@
-import React, { useState, useEffect } from "react";
-import * as userApi from "./api/userApi";
+import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import Button from "@paycor/button";
+import PropTypes from "prop-types";
 import { Delete } from "@paycor/icon";
 
-function Users(props) {
-  const [users, setUsers] = useState([]);
+function Users({ deleteUser, users, isLoading }) {
   const [redirect, setRedirect] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    userApi.getUsers().then(users => {
-      setUsers(users);
-      setIsLoading(false);
-    });
-  }, []); // use Effect is used as component life cycle and we also need to pass initial value so that it will render only if its initial value
-
-  function deleteUser(id) {
-    userApi.deleteUser(id).then(() => {
-      //runs after the delete was successful
-      const filteredUsers = users.filter(u => u.id !== id);
-      setUsers(filteredUsers);
-    });
-  }
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   userApi.getUsers().then(users => {
+  //     setUsers(users);
+  //     setIsLoading(false);
+  //   });
+  // }, []);
+  // use Effect is used as component life cycle and we also need to pass initial value so that it will render only if its initial value
 
   function renderUser(user) {
     return (
@@ -57,6 +48,11 @@ function Users(props) {
     </>
   );
 }
+
+Users.propTypes = {
+  deleteUser: PropTypes.func.isRequired,
+  users: PropTypes.array.isRequired
+};
 // class Users extends React.Component {
 //   constructor(props) {
 //     super(props);
