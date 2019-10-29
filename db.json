@@ -3,32 +3,12 @@
     {
       "id": 1,
       "name": "Test 1",
-      "role": "admin"
+      "role": "user"
     },
     {
       "id": 2,
       "name": "Test 2",
-      "role": "user"
-    },
-    {
-      "id": 3,
-      "name": "Test 3",
       "role": "admin"
-    },
-    {
-      "id": 4,
-      "name": "Test 4",
-      "role": "user"
-    },
-    {
-      "id": 5,
-      "name": "Test 5",
-      "role": "user"
-    },
-    {
-      "id": 6,
-      "name": "Test 6",
-      "role": "user"
     }
   ]
 }

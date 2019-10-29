@@ -1,20 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Link, Redirect } from "react-router-dom";
 import Button from "@paycor/button";
 import PropTypes from "prop-types";
 import { Delete } from "@paycor/icon";
+import { useSelector, useDispatch } from "react-redux";
+import * as userActions from "./redux/actions/userActions";
 
-function Users({ deleteUser, users, isLoading }) {
+function Users({ isLoading }) {
+  const dispatch = useDispatch();
+  const users = useSelector(state => state.users); //get users from redux
   const [redirect, setRedirect] = useState(false);
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   userApi.getUsers().then(users => {
-  //     setUsers(users);
-  //     setIsLoading(false);
-  //   });
-  // }, []);
+  useEffect(() => {
+    dispatch(userActions.loadUsers());
+  }, [dispatch]);
   // use Effect is used as component life cycle and we also need to pass initial value so that it will render only if its initial value
+
+  const deleteUser = userId => {
+    dispatch(userActions.deleteUser(userId));
+  };
 
   function renderUser(user) {
     return (
@@ -49,10 +53,27 @@ function Users({ deleteUser, users, isLoading }) {
   );
 }
 
-Users.propTypes = {
-  deleteUser: PropTypes.func.isRequired,
-  users: PropTypes.array.isRequired
-};
+// Users.propTypes = {
+//   deleteUser: PropTypes.func.isRequired,
+//   users: PropTypes.array.isRequired
+// };
+
+//the state that we return here from the redux store will be exposed
+//to the react compoent above via props
+// const mapStateToProps = state => {
+//   return {
+//     users: state.users
+//   };
+// };
+
+//the actions we return from this function will be passed as props to component above
+
+//if we omit this function, then dispatch us provided on props to our component automatically
+// const mapDispatchToProps = dispatch => {
+
+// };
+export default Users;
+//export default connect(mapStateToProps)(Users);
 // class Users extends React.Component {
 //   constructor(props) {
 //     super(props);
@@ -127,5 +148,3 @@ Users.propTypes = {
 //     );
 //   }
 // }
-
-export default Users;

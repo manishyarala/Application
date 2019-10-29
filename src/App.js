@@ -72,7 +72,7 @@ function App() {
           path="/users"
           render={props => (
             <Users
-              users={users}
+              //users={users}
               deleteUser={deleteUser}
               isLoading={isLoading}
             />
